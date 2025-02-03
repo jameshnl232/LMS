@@ -1,26 +1,34 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import {
+  clerkClient,
+  clerkMiddleware,
+  createRouteMatcher,
+} from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 const isStudentRoute = createRouteMatcher(["/user/(.*)"]);
 const isTeacherRoute = createRouteMatcher(["/teacher/(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
-  const { sessionClaims } = await auth();
-  const userRole =
-    (sessionClaims?.metadata as { userType: "student" | "teacher" })
-      ?.userType || "student";
+  const userId = (await auth()).userId;
+  if (userId) {
+    try {
+      const user = await (await clerkClient()).users.getUser(userId);
+      const userRole = user.publicMetadata?.userType || "student";
 
-  if (isStudentRoute(req)) {
-    if (userRole !== "student") {
-      const url = new URL("/teacher/courses", req.url);
-      return NextResponse.redirect(url);
-    }
-  }
-
-  if (isTeacherRoute(req)) {
-    if (userRole !== "teacher") {
-      const url = new URL("/user/courses", req.url);
-      return NextResponse.redirect(url);
+      if (isStudentRoute(req)) {
+        if (userRole !== "student") {
+          const url = new URL("/teacher/courses", req.url);
+          return NextResponse.redirect(url);
+        }
+      }
+      if (isTeacherRoute(req)) {
+        if (userRole !== "teacher") {
+          const url = new URL("/user/courses", req.url);
+          return NextResponse.redirect(url);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
     }
   }
 });

@@ -963,7 +963,7 @@ input[type="color"] {
 }
 
 .course-card__category {
-  @apply text-sm bg-customgreys-secondarybg rounded-full px-3 py-2 text-gray-400;
+  @apply text-sm bg-customgreys-secondarybg rounded-full px-3 py-2 text-gray-900;
 }
 
 .course-card__price {
@@ -1263,11 +1263,11 @@ input[type="color"] {
 }
 
 .course-card-teacher__title {
-  @apply text-primary-50 text-md md:text-lg line-clamp-2 overflow-hidden;
+  @apply text-gray-900 text-md md:text-lg line-clamp-2 overflow-hidden;
 }
 
 .course-card-teacher__category {
-  @apply bg-customgreys-dirtyGrey/50 px-2 py-1 mt-3 mb-3 rounded-xl w-fit text-sm;
+  @apply bg-gray-600 text-gray-200 px-2 py-1 mt-3 mb-3 rounded-xl w-fit text-sm;
 }
 
 .course-card-teacher__edit-button {
